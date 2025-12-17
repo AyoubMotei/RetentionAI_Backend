@@ -1,0 +1,30 @@
+# --- DATA SCIENCE & MACHINE LEARNING ---
+pandas          
+numpy           
+matplotlib     
+seaborn   
+scikit-learn
+imbalanced-learn
+joblib 
+
+# --- BACKEND API (FastAPI) ---
+fastapi     
+uvicorn[standard] 
+pydantic       
+python-dotenv   
+
+# --- BASE DE DONNÉES ---
+sqlalchemy     
+psycopg2-binary  
+
+# --- SÉCURITÉ & AUTHENTIFICATION ---
+python-jose[cryptography]
+passlib[argon2]
+
+# --- IA GÉNÉRATIVE (HUGGING FACE / LLM) ---
+requests   
+
+# --- TESTS & QUALITÉ ---
+pytest        
+httpx
+
