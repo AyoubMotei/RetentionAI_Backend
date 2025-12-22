@@ -47,18 +47,23 @@ Contraintes :
 def generate_retention_plan(probability: float, employee: dict):
     if probability <= 0.50:
         return None
+    
+    try:
+        genai.configure(api_key=GEMINI_API_KEY)
+        model = genai.GenerativeModel("gemini-2.5-flash")
 
-    genai.configure(api_key=GEMINI_API_KEY)
-    model = genai.GenerativeModel("gemini-2.5-flash")
+        response = model.generate_content(
+            build_prompt(probability, employee)
+        )
 
-    response = model.generate_content(
-        build_prompt(probability, employee)
-    )
+        # Nettoyage simple → liste
+        actions = []
+        for line in response.text.splitlines():
+            if line.lower().startswith("action"):
+                actions.append(line.split(":", 1)[1].strip())
 
-    # Nettoyage simple → liste
-    actions = []
-    for line in response.text.splitlines():
-        if line.lower().startswith("action"):
-            actions.append(line.split(":", 1)[1].strip())
+        return actions[:3]
 
-    return actions[:3]
+    except Exception as e:
+            print(f"Error calling Gemini API: {e}")
+            return ["Service IA indisponible (Limite de quota atteinte ou erreur technique)", "Veuillez réessayer ultérieurement."]
