@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: retentionai_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=retentiondb
+    depends_on:
+      - db
+    networks:
+      - retention-net
+
+  frontend:
+    build:
+      context: ../retentionai_frontend2
+      dockerfile: Dockerfile
+    container_name: retentionai_frontend
+    ports:
+     
+      - "5173:5173"
+    volumes:
+      - ../retentionai_frontend2:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - retention-net
+
+  db:
+    image: postgres:13
+    container_name: retentionai_db
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=retentiondb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - retention-net
+
+networks:
+  retention-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
