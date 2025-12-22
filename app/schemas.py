@@ -16,8 +16,8 @@ class UserResponse(UserCreate):
     
     
 
-
 class EmployeeFeatures(BaseModel):
+    EmployeeId: str  
     Age: int
     BusinessTravel: str
     DailyRate: int
@@ -49,6 +49,9 @@ class EmployeeFeatures(BaseModel):
     YearsSinceLastPromotion: int
     YearsWithCurrManager: int
 
+
+# class CompleteEmployeeFeatures(EmployeeFeatures):
+#     EmployeeId: str  
 
 class PredictionOutput(BaseModel):
     churn_probability: float

@@ -77,15 +77,34 @@ def login(user: UserCreate, db: Session = Depends(get_db)):
     return {"access_token": token, "token_type": "bearer"}
 
 
+# @app.post("/predict", response_model=PredictionOutput)
+# def predict(data: EmployeeFeatures, user: dict=Depends(get_current_user)):
+
+#     proba = predict_probability(data)
+
+
+#     return {"churn_probability": float(proba)}
+
 @app.post("/predict", response_model=PredictionOutput)
-def predict(data: EmployeeFeatures, user: dict=Depends(get_current_user)):
+def predict(data:EmployeeFeatures, user: dict=Depends(get_current_user), db: Session = Depends(get_db)):
 
     proba = predict_probability(data)
 
+    current_user = db.query(User).filter(User.username == user).first()
+    
+    if current_user:
+        history_entry = PredictionHistory(
+            user_id=current_user.id,
+            employee_id=data.EmployeeId,
+            probability=str(proba)  
+        )
+        db.add(history_entry)
+        db.commit()
 
-    return {"churn_probability": float(proba)}
 
-        
+    return {"churn_probability": float(proba)}       
+
+
 
 
 @app.post(
@@ -117,6 +136,7 @@ def generate_retention_plan_endpoint(
        
         "retention_plan": actions
     }
+
 
 @app.get("/test-env")
 def test_env():
